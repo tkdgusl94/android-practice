@@ -1,6 +1,6 @@
 package com.example.dagger2_sample.injection
 
-import com.example.dagger2_sample.Counter
+import com.example.dagger2_sample.data.Counter
 import com.example.dagger2_sample.injection.module.CounterModule
 import dagger.Component
 

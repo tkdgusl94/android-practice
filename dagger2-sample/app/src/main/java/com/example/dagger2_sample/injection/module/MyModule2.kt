@@ -1,6 +1,6 @@
 package com.example.dagger2_sample.injection.module
 
-import com.example.dagger2_sample.Person
+import com.example.dagger2_sample.data.Person
 import dagger.Module
 import dagger.Provides
 

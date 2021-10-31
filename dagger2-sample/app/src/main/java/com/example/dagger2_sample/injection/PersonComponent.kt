@@ -1,7 +1,7 @@
 package com.example.dagger2_sample.injection
 
-import com.example.dagger2_sample.PersonA
-import com.example.dagger2_sample.PersonB
+import com.example.dagger2_sample.data.PersonA
+import com.example.dagger2_sample.data.PersonB
 import com.example.dagger2_sample.injection.module.PersonModule
 import dagger.Component
 

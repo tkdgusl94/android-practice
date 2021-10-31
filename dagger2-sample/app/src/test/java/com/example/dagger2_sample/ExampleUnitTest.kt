@@ -1,7 +1,10 @@
 package com.example.dagger2_sample
 
+import com.example.dagger2_sample.data.Counter
+import com.example.dagger2_sample.data.Person
+import com.example.dagger2_sample.data.PersonA
+import com.example.dagger2_sample.data.PersonB
 import com.example.dagger2_sample.injection.Animal
-import com.example.dagger2_sample.injection.Cafe
 import com.example.dagger2_sample.injection.DaggerCafeComponent
 import com.example.dagger2_sample.injection.DaggerCounterComponent
 import com.example.dagger2_sample.injection.DaggerCustomMapComponent

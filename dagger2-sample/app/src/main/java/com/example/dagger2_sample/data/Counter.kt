@@ -1,4 +1,4 @@
-package com.example.dagger2_sample
+package com.example.dagger2_sample.data
 
 import dagger.Lazy
 import javax.inject.Inject

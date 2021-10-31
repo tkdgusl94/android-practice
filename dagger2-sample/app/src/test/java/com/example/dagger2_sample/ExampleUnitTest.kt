@@ -1,13 +1,17 @@
 package com.example.dagger2_sample
 
 import com.example.dagger2_sample.injection.Animal
+import com.example.dagger2_sample.injection.Cafe
+import com.example.dagger2_sample.injection.DaggerCafeComponent
 import com.example.dagger2_sample.injection.DaggerCounterComponent
 import com.example.dagger2_sample.injection.DaggerCustomMapComponent
 import com.example.dagger2_sample.injection.DaggerMapComponent
+import com.example.dagger2_sample.injection.DaggerMultiBindsComponent
 import com.example.dagger2_sample.injection.DaggerMyComponent1
 import com.example.dagger2_sample.injection.DaggerMyComponent2
 import com.example.dagger2_sample.injection.DaggerMyComponent3
 import com.example.dagger2_sample.injection.DaggerMyComponent4
+import com.example.dagger2_sample.injection.DaggerParentComponent
 import com.example.dagger2_sample.injection.DaggerPersonComponent
 import com.example.dagger2_sample.injection.DaggerReusableComponent
 import com.example.dagger2_sample.injection.DaggerSetComponent
@@ -115,5 +119,37 @@ class ExampleUnitTest {
         assert(map.size == 2)
         assert(map[Animal.CAT] == "Meow")
         assert(map[Animal.DOG] == "Bow-wow")
+    }
+
+    @Test
+    fun test_subcomponent_multi_binding() {
+        val parentComponent = DaggerParentComponent.create()
+        val childComponent = parentComponent.getChildComponentBuilder().build()
+
+        val parentSet = parentComponent.getStrings()
+        val childSet = childComponent.getStrings()
+
+        assert(parentSet.size == 2)
+        assert(childSet.size == 4)
+    }
+
+    @Test
+    fun test_abstract_multi_binding() {
+        val component = DaggerMultiBindsComponent.create()
+        val stringSet = component.getStrings()
+
+        assert(stringSet.isEmpty())
+    }
+
+    @Test
+    fun test_cafe_coffee() {
+        val component = DaggerCafeComponent.create()
+        val cafe = component.getCafe()
+
+        println(cafe.orderCoffee())
+        println(cafe.orderCoffee())
+        println(cafe.orderCoffee())
+
+        assert(false)
     }
 }

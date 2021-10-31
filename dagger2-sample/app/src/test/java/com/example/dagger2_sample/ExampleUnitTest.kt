@@ -1,11 +1,17 @@
 package com.example.dagger2_sample
 
+import com.example.dagger2_sample.injection.Animal
 import com.example.dagger2_sample.injection.DaggerCounterComponent
+import com.example.dagger2_sample.injection.DaggerCustomMapComponent
+import com.example.dagger2_sample.injection.DaggerMapComponent
 import com.example.dagger2_sample.injection.DaggerMyComponent1
 import com.example.dagger2_sample.injection.DaggerMyComponent2
 import com.example.dagger2_sample.injection.DaggerMyComponent3
 import com.example.dagger2_sample.injection.DaggerMyComponent4
 import com.example.dagger2_sample.injection.DaggerPersonComponent
+import com.example.dagger2_sample.injection.DaggerReusableComponent
+import com.example.dagger2_sample.injection.DaggerSetComponent
+import com.example.dagger2_sample.injection.DaggerSingletonComponent
 import org.junit.Test
 
 /**
@@ -63,5 +69,51 @@ class ExampleUnitTest {
         val counter = Counter()
         component.inject(counter)
         counter.printProvider()
+    }
+
+    @Test
+    fun test_singleton() {
+        val component = DaggerSingletonComponent.create()
+        val object1 = component.getObject()
+        val object2 = component.getObject()
+        assert(object1 == object2)
+    }
+
+    @Test
+    fun test_reusable() {
+        val component = DaggerReusableComponent.create()
+        val object1 = component.getObject()
+        val object2 = component.getObject()
+        assert(object1 == object2)
+    }
+
+    @Test
+    fun test_set_multi_binding() {
+        val component = DaggerSetComponent.create()
+        val set = component.getSet()
+
+        assert(set.size == 2)
+        assert(set.contains("hello"))
+        assert(set.contains("world"))
+    }
+
+    @Test
+    fun test_map_multi_binding() {
+        val component = DaggerMapComponent.create()
+        val map = component.getMap()
+
+        assert(map.size == 2)
+        assert(map["key1"] == 100)
+        assert(map["key2"] == 200)
+    }
+
+    @Test
+    fun test_custom_map_multi_binding() {
+        val component = DaggerCustomMapComponent.create()
+        val map = component.getStringsByAnimal()
+
+        assert(map.size == 2)
+        assert(map[Animal.CAT] == "Meow")
+        assert(map[Animal.DOG] == "Bow-wow")
     }
 }

@@ -3,30 +3,36 @@ package com.example.dagger2_sample.injection.android
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.dagger2_sample.App
-import dagger.BindsInstance
+import com.example.dagger2_sample.MainActivity
+import com.example.dagger2_sample.data.Person
 import dagger.Component
 import dagger.Module
 import dagger.Provides
+import dagger.android.AndroidInjectionModule
+import dagger.android.AndroidInjector
+import dagger.android.ContributesAndroidInjector
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-@Component(modules = [ApplicationModule::class])
-interface ApplicationComponent {
-    fun mainActivityComponentBuilder(): MainActivityComponent.Builder
+@Component(modules = [
+    AndroidInjectionModule::class,
+    ApplicationModule::class
+])
+interface ApplicationComponent : AndroidInjector<App> {
 
     @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance app: App): ApplicationComponent
-    }
+    interface Factory : AndroidInjector.Factory<App>
 }
 
-@Module(subcomponents = [MainActivityComponent::class])
-class ApplicationModule {
+@Module
+abstract class ApplicationModule {
 
-    @Singleton
+    @Named("application")
     @Provides
-    fun provideSharedPreference(app: App): SharedPreferences {
-        println("provide sharedPreference")
-        return app.getSharedPreferences("default", Context.MODE_PRIVATE)
-    }
+    fun providePerson(): Person = Person("application", 28)
+
+    @ActivityScope
+    @ContributesAndroidInjector(modules = [MainActivityModule::class])
+    abstract fun mainActivity(): MainActivity
 }

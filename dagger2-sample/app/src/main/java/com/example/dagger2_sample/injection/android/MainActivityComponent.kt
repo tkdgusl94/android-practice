@@ -2,32 +2,27 @@ package com.example.dagger2_sample.injection.android
 
 import com.example.dagger2_sample.MainActivity
 import com.example.dagger2_sample.data.Person
-import dagger.BindsInstance
+import dagger.Component
 import dagger.Module
 import dagger.Provides
 import dagger.Subcomponent
+import dagger.android.AndroidInjector
+import javax.inject.Named
 
 @ActivityScope
-@Subcomponent(
-    modules = [
-        MainActivityModule::class
-    ]
-)
-interface MainActivityComponent {
-    fun inject(activity: MainActivity)
+@Subcomponent(modules = [
+    MainActivityModule::class
+])
+interface MainActivityComponent : AndroidInjector<MainActivity> {
 
-    @Subcomponent.Builder
-    interface Builder {
-        @BindsInstance
-        fun setActivity(activity: MainActivity): Builder
-        fun setModule(module: MainActivityModule): Builder
-        fun build(): MainActivityComponent
-    }
+    @Subcomponent.Factory
+    interface Factory : AndroidInjector.Factory<MainActivity>
 }
 
 @Module
 class MainActivityModule {
 
+    @Named("activity")
     @ActivityScope
     @Provides
     fun providePerson(): Person = Person("leveloper", 28)

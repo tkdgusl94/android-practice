@@ -1,36 +1,30 @@
 package com.example.dagger2_sample
 
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.dagger2_sample.data.Person
-import com.example.dagger2_sample.injection.android.MainActivityComponent
-import com.example.dagger2_sample.injection.android.MainActivityModule
+import dagger.android.AndroidInjection
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
+import javax.inject.Named
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), HasAndroidInjector {
 
     @Inject
-    lateinit var sharedPreferences: SharedPreferences
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
 
+    override fun androidInjector(): AndroidInjector<Any> = androidInjector
+
+    @Named("application")
     @Inject
     lateinit var person: Person
 
-    val component: MainActivityComponent by lazy {
-        (application as App).applicationComponent
-            .mainActivityComponentBuilder()
-            .setModule(MainActivityModule())
-            .setActivity(this)
-            .build()
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
+//        AndroidInjection.inject(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        component.inject(this)
-
-        println("shared: $sharedPreferences")
-        println("person: $person")
     }
 }

@@ -1,11 +1,12 @@
 package com.example.rx_sample
 
+import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
 
-import org.junit.Assert.*
 import org.reactivestreams.Publisher
 
 /**
@@ -20,12 +21,25 @@ class ExampleUnitTest {
     private fun <T> Observable<T>.print() = subscribe(
         System.out::println,
         System.out::println
-    ) { println("onComplete") }
+    ) {
+        println("onComplete")
+    }
 
     private fun <T> Single<T>.print() = subscribe(
         System.out::println,
         System.out::println
     )
+
+    private fun <T> Maybe<T>.print() = subscribe(
+        System.out::println,
+        System.out::println
+    ) {
+        println("onComplete")
+    }
+
+    private fun Completable.print() = subscribe {
+        println("onComplete")
+    }
 
     @Test
     fun test01() {
@@ -149,6 +163,7 @@ class ExampleUnitTest {
 
     /**
      * Single은 단 하나의 아이템만 발행한다. 따라서 just에는 하나의 인자만 가능하다.
+     * Single은 emitter가 onSuccess와 onError밖에 없다.
      */
     @Test
     fun test08_single_just() {
@@ -166,5 +181,65 @@ class ExampleUnitTest {
 
         val source = Observable.just(1, 2, 3)
         source.toList().print()
+
+        divider()
+    }
+
+    /**
+     * Maybe는 Single과 비슷하지만 아이템을 발행하거나 발행하지 않을 수도 있다.
+     * onSuccess(), onError(), onComplete()가 있다.
+     */
+    @Test
+    fun test09_maybe() {
+        Maybe.create<Int> {
+            it.onSuccess(100)
+            it.onComplete() // 무시된다.
+        }
+            .doOnSuccess { item -> println("doOnSuccess $item") }
+            .doOnComplete { println("complete") }
+            .print()
+
+        divider()
+
+        Maybe.create<Int> {
+            it.onComplete()
+            it.onSuccess(100) // 무시된다.
+        }
+            .doOnSuccess { item -> println("doOnSuccess $item") }
+            .doOnComplete { println("complete") }
+            .print()
+    }
+
+    @Test
+    fun test10_observable_to_maybe() {
+        Observable.just(1, 2, 3)
+            .firstElement()
+            .print()
+
+        divider()
+
+        Observable.empty<Int>()
+            .firstElement()
+            .print()
+    }
+
+    /**
+     * Completable
+     */
+    @Test
+    fun test11_completable() {
+        Completable.create {
+            it.onComplete()
+        }
+            .print()
+
+        divider()
+
+        Completable.fromAction { // 안의 액션이 다 끝나면 onComplete() 호출
+            val millis = System.currentTimeMillis()
+            Thread.sleep(100)
+            println("finish action: ${System.currentTimeMillis() - millis}")
+        }
+            .print()
     }
 }

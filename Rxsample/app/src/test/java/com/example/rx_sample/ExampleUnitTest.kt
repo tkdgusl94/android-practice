@@ -8,6 +8,7 @@ import io.reactivex.rxjava3.subjects.PublishSubject
 import org.junit.Test
 
 import org.reactivestreams.Publisher
+import java.util.concurrent.TimeUnit
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -241,5 +242,26 @@ class ExampleUnitTest {
             println("finish action: ${System.currentTimeMillis() - millis}")
         }
             .print()
+    }
+
+    /**
+     * Cold Observable은 Observable에 구독을 요청하면 아이템을 발행하기 시작한다.
+     * 따라서 같은 source가 있으면 여러 번 구독을 요청해도 처음부터 끝까지 발행한다.
+     */
+    @Test
+    fun test01_cold_observable() {
+        val source = Observable.interval(1, TimeUnit.SECONDS)
+
+        source.subscribe {
+            println("#1: $it")
+        }
+
+        Thread.sleep(3000)
+
+        source.subscribe {
+            println("#2: $it")
+        }
+
+        Thread.sleep(3000)
     }
 }
